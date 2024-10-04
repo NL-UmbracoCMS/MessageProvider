@@ -18,15 +18,12 @@ public class MessageSender(ILoggerFactory loggerFactory, EmailClient emailClient
 	{
 		_logger.LogInformation("SQL Changes: " + JsonConvert.SerializeObject(changes));
 
-		var sentMessages = new HashSet<string>();
-
 		try
 		{
 			foreach (SqlChange<ClientContacts> change in changes)
 			{
-				if (!string.IsNullOrEmpty(change.Item.Email) && !sentMessages.Contains(change.Item.Message))
+				if (change.Operation == 0 && !string.IsNullOrEmpty(change.Item.Email))
 				{
-					sentMessages.Add(change.Item.Message);
 
 					var newMessage = new MessageRequest
 					{
